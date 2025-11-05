@@ -1,0 +1,236 @@
+<div class="settings-container">
+  <div class="settings-header">
+    <h1>Configurações</h1>
+    <p>Personalize sua experiência no Capsa Desk</p>
+  </div>
+
+  <div class="settings-content">
+    <!-- Notificações -->
+    <section class="settings-section">
+      <h2>
+        <span class="material-icons">notifications</span>
+        Notificações
+      </h2>
+      
+      <div class="settings-grid">
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3>Notificações por Email</h3>
+            <p>Receba atualizações importantes por email</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" [(ngModel)]="settings.notifications.email">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3>Notificações Push</h3>
+            <p>Receba notificações em tempo real no navegador</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" [(ngModel)]="settings.notifications.push">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3>Resumo Semanal</h3>
+            <p>Receba um resumo semanal das atividades</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" [(ngModel)]="settings.notifications.weeklyDigest">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3>Aprovações de Relatórios</h3>
+            <p>Notificações sobre status de relatórios</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" [(ngModel)]="settings.notifications.reportApprovals">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3>Solicitações de Produto</h3>
+            <p>Notificações sobre solicitações de produtos</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" [(ngModel)]="settings.notifications.productRequests">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Privacidade -->
+    <section class="settings-section">
+      <h2>
+        <span class="material-icons">visibility</span>
+        Privacidade
+      </h2>
+      
+      <div class="settings-grid">
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3>Perfil Visível</h3>
+            <p>Permitir que outros usuários vejam seu perfil</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" [(ngModel)]="settings.privacy.profileVisible">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3>Mostrar Email</h3>
+            <p>Exibir seu email publicamente no perfil</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" [(ngModel)]="settings.privacy.showEmail">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3>Status de Atividade</h3>
+            <p>Mostrar quando você está online</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" [(ngModel)]="settings.privacy.activityStatus">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Preferências -->
+    <section class="settings-section">
+      <h2>
+        <span class="material-icons">tune</span>
+        Preferências
+      </h2>
+      
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Idioma</label>
+          <select [(ngModel)]="settings.preferences.language" class="form-select">
+            <option *ngFor="let lang of languages" [value]="lang.code">{{ lang.name }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Fuso Horário</label>
+          <select [(ngModel)]="settings.preferences.timezone" class="form-select">
+            <option *ngFor="let tz of timezones" [value]="tz">{{ tz }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Tema</label>
+          <select [(ngModel)]="settings.preferences.theme" class="form-select">
+            <option *ngFor="let theme of themes" [value]="theme.value">{{ theme.label }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Formato de Data</label>
+          <select [(ngModel)]="settings.preferences.dateFormat" class="form-select">
+            <option *ngFor="let format of dateFormats" [value]="format.value">{{ format.label }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Itens por Página</label>
+          <select [(ngModel)]="settings.preferences.itemsPerPage" class="form-select">
+            <option *ngFor="let count of itemsPerPageOptions" [value]="count">{{ count }}</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Segurança -->
+    <section class="settings-section">
+      <h2>
+        <span class="material-icons">security</span>
+        Segurança
+      </h2>
+      
+      <div class="security-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Senha Atual</label>
+            <input 
+              type="password" 
+              [(ngModel)]="security.currentPassword" 
+              placeholder="Digite sua senha atual"
+              class="form-input">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nova Senha</label>
+            <input 
+              type="password" 
+              [(ngModel)]="security.newPassword" 
+              placeholder="Digite a nova senha"
+              class="form-input">
+          </div>
+
+          <div class="form-group">
+            <label>Confirmar Nova Senha</label>
+            <input 
+              type="password" 
+              [(ngModel)]="security.confirmPassword" 
+              placeholder="Confirme a nova senha"
+              class="form-input">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button (click)="changePassword()" class="btn-primary">
+            <span class="material-icons">lock</span>
+            Alterar Senha
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ações -->
+    <section class="settings-section">
+      <h2>
+        <span class="material-icons">build</span>
+        Ações
+      </h2>
+      
+      <div class="actions-grid">
+        <button (click)="exportData()" class="btn-secondary">
+          <span class="material-icons">file_download</span>
+          Exportar Meus Dados
+        </button>
+        <button (click)="deleteAccount()" class="btn-danger">
+          <span class="material-icons">delete_forever</span>
+          Excluir Minha Conta
+        </button>
+      </div>
+    </section>
+
+    <!-- Botão Salvar -->
+    <div class="settings-actions">
+      <button (click)="saveSettings()" class="btn-primary btn-large">
+        <span class="material-icons">save</span>
+        Salvar Todas as Configurações
+      </button>
+    </div>
+  </div>
+</div>

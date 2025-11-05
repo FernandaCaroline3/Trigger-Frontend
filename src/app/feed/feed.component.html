@@ -1,0 +1,65 @@
+<div class="feed-container">
+  <div class="feed-header">
+    <h1>Feed Principal</h1>
+    <p>Fique por dentro das atualizações da equipe Capsa Desk</p>
+  </div>
+
+  <!-- Criar Post -->
+  <div class="create-post">
+    <div class="post-input">
+      <div class="user-avatar-small">{{ currentUser.name.charAt(0) }}</div>
+      <textarea 
+        [(ngModel)]="newPostContent" 
+        placeholder="Compartilhe uma atualização..."
+        rows="3"
+        class="post-textarea"></textarea>
+    </div>
+    <div class="post-actions">
+      <button (click)="createPost()" class="post-button" [disabled]="!newPostContent.trim()">
+        Publicar
+      </button>
+    </div>
+  </div>
+
+  <!-- Lista de Posts -->
+  <div class="posts-feed">
+    <div *ngFor="let post of posts" class="post-card">
+      <div class="post-header">
+        <div class="user-avatar-small">{{ post.author.charAt(0) }}</div>
+        <div class="post-user-info">
+          <div class="user-name">{{ post.author }}</div>
+          <div class="user-role">{{ post.authorRole }}</div>
+        </div>
+        <div class="post-time">{{ post.timestamp }}</div>
+      </div>
+
+      <div class="post-content">
+        {{ post.content }}
+      </div>
+
+      <div class="post-engagement">
+        <div class="engagement-stats">
+          <span>{{ post.likes }} curtidas</span>
+          <span>{{ post.comments }} comentários</span>
+        </div>
+        <div class="engagement-actions">
+          <button 
+            class="engagement-button" 
+            [class.liked]="post.liked"
+            (click)="toggleLike(post)">
+            <span class="material-icons">{{ post.liked ? 'favorite' : 'favorite_border' }}</span>
+            Curtir
+          </button>
+          <button class="engagement-button" (click)="addComment(post)">
+            <span class="material-icons">chat_bubble_outline</span>
+            Comentar
+          </button>
+          <button class="engagement-button">
+            <span class="material-icons">share</span>
+            Compartilhar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

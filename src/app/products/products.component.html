@@ -1,0 +1,243 @@
+<div class="products-container">
+  <div class="products-header">
+    <h1>Produtos</h1>
+    <p>Gerencie solicitações de produtos e serviços no Capsa Desk</p>
+  </div>
+
+
+  <!-- Navegação -->
+  <nav class="products-nav">
+    <button 
+      (click)="currentSection = 'create'" 
+      [class.active]="currentSection === 'create'"
+      class="nav-btn">
+      <span class="material-icons">add</span>
+      Nova Solicitação
+    </button>
+    <button 
+      (click)="currentSection = 'my-requests'" 
+      [class.active]="currentSection === 'my-requests'"
+      class="nav-btn">
+      <span class="material-icons">list</span>
+      Minhas Solicitações
+    </button>
+    <button 
+      (click)="currentSection = 'all-requests'" 
+      [class.active]="currentSection === 'all-requests'"
+      class="nav-btn">
+      <span class="material-icons">visibility</span>
+      Todas as Solicitações
+    </button>
+    <button 
+      *ngIf="isAdmin"
+      (click)="currentSection = 'pending'" 
+      [class.active]="currentSection === 'pending'"
+      class="nav-btn">
+      <span class="material-icons">pending_actions</span>
+      Pendentes ({{ pendingRequests.length }})
+    </button>
+  </nav>
+
+  <!-- Conteúdo -->
+  <div class="products-content">
+    <!-- Nova Solicitação -->
+    <section *ngIf="currentSection === 'create'" class="section-content">
+      <h2>Nova Solicitação</h2>
+      
+      <div class="form-container">
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label>Título da Solicitação</label>
+            <input 
+              type="text" 
+              [(ngModel)]="newRequest.title" 
+              placeholder="Ex: Licença Software, Monitor, Serviço de Consultoria..."
+              class="form-input">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Categoria</label>
+            <select [(ngModel)]="newRequest.category" class="form-select">
+              <option *ngFor="let cat of categories" [value]="cat.value">{{ cat.label }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Prioridade</label>
+            <select [(ngModel)]="newRequest.priority" class="form-select">
+              <option *ngFor="let priority of priorities" [value]="priority.value">{{ priority.label }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Custo Estimado (R$)</label>
+            <input 
+              type="number" 
+              [(ngModel)]="newRequest.estimatedCost" 
+              placeholder="0,00"
+              class="form-input">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Descrição e Justificativa</label>
+          <textarea 
+            [(ngModel)]="newRequest.description" 
+            placeholder="Descreva detalhadamente a necessidade, justificativa, quantidade necessária e benefícios esperados..."
+            rows="6"
+            class="form-textarea"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button (click)="createRequest()" class="btn-primary" [disabled]="!newRequest.title || !newRequest.description">
+            <span class="material-icons">send</span>
+            Enviar Solicitação
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Minhas Solicitações -->
+    <section *ngIf="currentSection === 'my-requests'" class="section-content">
+      <h2>Minhas Solicitações</h2>
+      
+      <div class="requests-grid">
+        <div *ngFor="let request of myRequests" class="request-card">
+          <div class="request-header">
+            <h3>{{ request.title }}</h3>
+            <div class="request-meta">
+              <span class="request-category">{{ getCategoryText(request.category) }}</span>
+              <span class="request-priority" [class]="getPriorityClass(request.priority)">
+                {{ getPriorityText(request.priority) }}
+              </span>
+              <span class="request-status" [class]="getStatusClass(request.status)">
+                {{ getStatusText(request.status) }}
+              </span>
+            </div>
+          </div>
+          
+          <div class="request-info">
+            <span class="material-icons">calendar_today</span>
+            {{ request.createdAt | date:'dd/MM/yyyy' }}
+            <span class="material-icons">business</span>
+            {{ request.department }}
+            <span *ngIf="request.estimatedCost" class="material-icons">attach_money</span>
+            <span *ngIf="request.estimatedCost">R$ {{ request.estimatedCost.toLocaleString('pt-BR') }}</span>
+          </div>
+
+          <p class="request-content">{{ request.description }}</p>
+
+          <div *ngIf="request.approvedBy" class="approval-info">
+            <span class="material-icons">verified</span>
+            Aprovado por {{ request.approvedBy }} em {{ request.approvedAt | date:'dd/MM/yyyy' }}
+          </div>
+
+          <div class="request-actions">
+            <button *ngIf="request.status === 'pending'" (click)="deleteRequest(request.id)" class="btn-danger">
+              <span class="material-icons">delete</span>
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="myRequests.length === 0" class="empty-state">
+        <span class="material-icons">inventory_2</span>
+        <h3>Nenhuma solicitação encontrada</h3>
+        <p>Você ainda não criou nenhuma solicitação.</p>
+      </div>
+    </section>
+
+    <!-- Todas as Solicitações -->
+    <section *ngIf="currentSection === 'all-requests'" class="section-content">
+      <h2>Todas as Solicitações</h2>
+      
+      <div class="requests-grid">
+        <div *ngFor="let request of allRequests" class="request-card">
+          <div class="request-header">
+            <h3>{{ request.title }}</h3>
+            <div class="request-meta">
+              <span class="request-category">{{ getCategoryText(request.category) }}</span>
+              <span class="request-priority" [class]="getPriorityClass(request.priority)">
+                {{ getPriorityText(request.priority) }}
+              </span>
+              <span class="request-status" [class]="getStatusClass(request.status)">
+                {{ getStatusText(request.status) }}
+              </span>
+            </div>
+          </div>
+          
+          <div class="request-info">
+            <span class="material-icons">person</span>
+            {{ request.author }}
+            <span class="material-icons">calendar_today</span>
+            {{ request.createdAt | date:'dd/MM/yyyy' }}
+            <span class="material-icons">business</span>
+            {{ request.department }}
+            <span *ngIf="request.estimatedCost" class="material-icons">attach_money</span>
+            <span *ngIf="request.estimatedCost">R$ {{ request.estimatedCost.toLocaleString('pt-BR') }}</span>
+          </div>
+
+          <p class="request-content">{{ request.description }}</p>
+
+          <div *ngIf="request.approvedBy" class="approval-info">
+            <span class="material-icons">verified</span>
+            Aprovado por {{ request.approvedBy }} em {{ request.approvedAt | date:'dd/MM/yyyy' }}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Solicitações Pendentes -->
+    <section *ngIf="currentSection === 'pending' && isAdmin" class="section-content">
+      <h2>Solicitações Pendentes</h2>
+      
+      <div class="requests-grid">
+        <div *ngFor="let request of pendingRequests" class="request-card pending">
+          <div class="request-header">
+            <h3>{{ request.title }}</h3>
+            <div class="request-meta">
+              <span class="request-category">{{ getCategoryText(request.category) }}</span>
+              <span class="request-priority" [class]="getPriorityClass(request.priority)">
+                {{ getPriorityText(request.priority) }}
+              </span>
+              <span class="request-status status-pending">Pendente</span>
+            </div>
+          </div>
+          
+          <div class="request-info">
+            <span class="material-icons">person</span>
+            {{ request.author }}
+            <span class="material-icons">calendar_today</span>
+            {{ request.createdAt | date:'dd/MM/yyyy' }}
+            <span class="material-icons">business</span>
+            {{ request.department }}
+            <span *ngIf="request.estimatedCost" class="material-icons">attach_money</span>
+            <span *ngIf="request.estimatedCost">R$ {{ request.estimatedCost.toLocaleString('pt-BR') }}</span>
+          </div>
+
+          <p class="request-content">{{ request.description }}</p>
+
+          <div class="request-actions">
+            <button (click)="approveRequest(request.id)" class="btn-primary">
+              <span class="material-icons">check</span>
+              Aprovar
+            </button>
+            <button (click)="rejectRequest(request.id)" class="btn-danger">
+              <span class="material-icons">close</span>
+              Rejeitar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="pendingRequests.length === 0" class="empty-state">
+        <span class="material-icons">check_circle</span>
+        <h3>Nenhuma solicitação pendente</h3>
+        <p>Todas as solicitações foram revisadas.</p>
+      </div>
+    </section>
+  </div>
+</div>
