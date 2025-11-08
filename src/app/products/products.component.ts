@@ -133,4 +133,26 @@ export class ProductsComponent {
     };
     return categoryMap[category] || category;
   }
+
+  getAllRequests() {
+    this.http.get<ProductRequest[]>(`${this.API_URL}/solicitacao`).subscribe({
+      next: (data) => {
+        console.log('✅ Dados recebidos:', data);
+        this.allRequests = data;
+      },
+      error: (err) => {
+        console.error('❌ Erro ao buscar solicitações:', err);
+      },
+    });
+  }
+
+  showAllRequests() {
+    console.log('cliquei na parada');
+    this.currentSection = 'all-requests';
+    this.getAllRequests();
+  }
+
+  ngOnInit(): void {
+    this.getAllRequests();
+  }
 }
