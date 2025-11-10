@@ -11,6 +11,9 @@ import { AuthService } from '../auth/auth.service';
   imports: [CommonModule, FormsModule]
 })
 export class LoginComponent {
+goToRegister() {
+throw new Error('Method not implemented.');
+}
   email: string = '';
   password: string = '';
   errorMessage: string = '';
@@ -27,45 +30,19 @@ export class LoginComponent {
       return;
     }
 
-    if (!this.isValidEmail(this.email)) {
-      this.errorMessage = 'Por favor, insira um e-mail válido';
-      return;
-    }
-
     this.isLoading = true;
     this.errorMessage = '';
 
-    // Simula delay de rede
     setTimeout(() => {
       const success = this.authService.login(this.email, this.password);
       
       if (success) {
-        this.handleSuccessfulLogin();
+        this.router.navigate(['/home']);
       } else {
-        this.handleFailedLogin();
+        this.errorMessage = 'E-mail ou senha incorretos';
       }
       
       this.isLoading = false;
-    }, 1500);
-  }
-
-  private handleSuccessfulLogin(): void {
-    this.router.navigate(['/home']);
-  }
-
-  private handleFailedLogin(): void {
-    this.errorMessage = 'E-mail ou senha incorretos. Tente novamente.';
-    this.password = '';
-  }
-
-  clearError(): void {
-    if (this.errorMessage) {
-      this.errorMessage = '';
-    }
-  }
-
-  isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    }, 1000);
   }
 }
