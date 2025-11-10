@@ -24,7 +24,7 @@
 }
 
 .logo-text {
-  color: #2c3e50;
+  color: #667eea;
   margin: 0 0 1rem 0;
   font-size: 2rem;
   font-weight: 700;
@@ -33,7 +33,7 @@
 
 .welcome-text {
   margin: 0;
-  color: #7f8c8d;
+  color: #666666;
   font-size: 1rem;
   font-weight: 400;
 }
@@ -51,7 +51,7 @@
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: #333333;
   font-size: 0.9rem;
 }
 
@@ -85,7 +85,7 @@
 .login-button {
   width: 100%;
   padding: 0.75rem;
-  background: #667eea;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -97,13 +97,12 @@
 }
 
 .login-button:hover:not(:disabled) {
-  background: #5a6fd8;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
 }
 
 .login-button:disabled {
-  background: #bdc3c7;
+  background: #ccc;
   cursor: not-allowed;
   transform: none;
 }
