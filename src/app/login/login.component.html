@@ -1,49 +1,65 @@
 <div class="login-container">
   <div class="login-card">
+    <!-- Header -->
     <div class="login-header">
-      <div class="logo">
-        <img src="assets/logo-capsa-desk.png" alt="Capsa Desk" class="logo-image">
-      </div>
-      <h1 class="login-title">Capsa Desk</h1>
-      <p class="login-subtitle">Acesse sua conta para continuar</p>
+      <h1 class="logo-text">Capsa Desk</h1>
+      <p class="welcome-text">Acesse sua conta para continuar</p>
     </div>
 
-    <form (ngSubmit)="login()" class="login-form">
+    <!-- Form -->
+    <form (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Email Field -->
       <div class="form-group">
-        <label for="email">Email</label>
+        <label for="email" class="form-label">Email</label>
         <input 
           type="email" 
           id="email"
           [(ngModel)]="email" 
           name="email"
-          placeholder="seu.email@capsa.com"
           required
-          class="form-input">
+          placeholder="seu.email@capsa.com"
+          class="form-input"
+          [class.error]="errorMessage"
+          (input)="clearError()">
       </div>
 
+      <!-- Password Field -->
       <div class="form-group">
-        <label for="password">Senha</label>
+        <label for="password" class="form-label">Senha</label>
         <input 
           type="password" 
           id="password"
           [(ngModel)]="password" 
           name="password"
-          placeholder="Sua senha"
           required
-          class="form-input">
+          placeholder="Sua senha"
+          class="form-input"
+          [class.error]="errorMessage"
+          (input)="clearError()">
       </div>
 
+      <!-- Login Button -->
       <button 
         type="submit" 
-        class="login-button"
-        [disabled]="isLoading">
+        [disabled]="isLoading || !email || !password" 
+        class="login-button">
+        
         <span *ngIf="!isLoading">Entrar</span>
-        <span *ngIf="isLoading">Entrando...</span>
+        <span *ngIf="isLoading" class="loading-spinner">
+          <div class="spinner"></div>
+          Entrando...
+        </span>
       </button>
+
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
     </form>
 
-    <div class="login-footer">
-      <a href="#" class="forgot-password">Esqueceu sua senha?</a>
+    <!-- Forgot Password -->
+    <div class="forgot-password">
+      <a href="#" class="forgot-link">Esqueceu sua senha?</a>
     </div>
   </div>
 </div>
