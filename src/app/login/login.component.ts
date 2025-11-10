@@ -24,7 +24,7 @@ export class LoginComponent {
       // Simulação de login
       setTimeout(() => {
         this.isLoading = false;
-        this.router.navigate(['/app/feed']);
+        this.router.navigate(['/app/profile']);
       }, 1500);
     }
   }

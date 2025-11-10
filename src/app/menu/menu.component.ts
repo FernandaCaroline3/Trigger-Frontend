@@ -19,7 +19,6 @@ export class MenuComponent {
   };
 
   menuItems = [
-    { path: '/app/feed', icon: 'home', label: 'Feed Principal', active: true },
     { path: '/app/profile', icon: 'person', label: 'Meu Perfil', active: false },
     { path: '/app/reports', icon: 'assessment', label: 'Relatórios', active: false },
     { path: '/app/products', icon: 'inventory_2', label: 'Produtos', active: false },
