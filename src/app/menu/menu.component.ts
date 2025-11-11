@@ -20,8 +20,8 @@ export class MenuComponent {
 
   menuItems = [
     { path: '/app/profile', icon: 'person', label: 'Meu Perfil', active: false },
-    { path: '/app/reports', icon: 'assessment', label: 'Relatórios', active: false },
-    { path: '/app/products', icon: 'inventory_2', label: 'Produtos', active: false },
+    // { path: '/app/reports', icon: 'assessment', label: 'Relatórios', active: false }, // REMOVIDO
+    { path: '/app/products', icon: 'inventory_2', label: 'Patrimonios', active: false }, // NOME ALTERADO
     { path: '/app/settings', icon: 'settings', label: 'Configurações', active: false }
   ];
 
