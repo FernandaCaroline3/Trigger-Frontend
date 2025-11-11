@@ -10,7 +10,7 @@ import { SettingsComponent } from './settings/settings.component';
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent }, // ← ESTA LINHA DEVE VIR ANTES DO 'app'
+  { path: 'register', component: RegisterComponent }, // ← DEVE vir ANTES do 'app'
   { 
     path: 'app', 
     component: MenuComponent,
@@ -22,5 +22,5 @@ export const routes: Routes = [
       { path: '', redirectTo: 'profile', pathMatch: 'full' }
     ]
   },
-  { path: '**', redirectTo: '/login' } // ← ESTA SEMPRE DEVE SER A ÚLTIMA
+  { path: '**', redirectTo: '/login' } // ← SEMPRE a ÚLTIMA rota
 ];

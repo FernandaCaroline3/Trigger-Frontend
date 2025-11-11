@@ -39,36 +39,6 @@
           (input)="clearErrors()">
       </div>
 
-      <!-- Departamento Field -->
-      <div class="form-group">
-        <label for="department" class="form-label">Departamento</label>
-        <select 
-          id="department"
-          [(ngModel)]="userData.department" 
-          name="department"
-          required
-          class="form-input"
-          (change)="clearErrors()">
-          <option value="">Selecione um departamento</option>
-          <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
-        </select>
-      </div>
-
-      <!-- Função Field -->
-      <div class="form-group">
-        <label for="role" class="form-label">Função</label>
-        <select 
-          id="role"
-          [(ngModel)]="userData.role" 
-          name="role"
-          required
-          class="form-input"
-          (change)="clearErrors()">
-          <option value="user">Usuário</option>
-          <option value="admin">Administrador</option>
-        </select>
-      </div>
-
       <!-- Password Field -->
       <div class="form-group">
         <label for="password" class="form-label">Senha</label>
