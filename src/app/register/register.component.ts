@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AuthService, User } from '../auth/auth.service'; // ← Corrigido o caminho
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -14,13 +14,10 @@ export class RegisterComponent {
   userData = {
     name: '',
     email: '',
-    department: '',
-    role: 'user' as 'admin' | 'user',
     password: ''
   };
   
   confirmPassword: string = '';
-  departments: string[] = [];
   isLoading: boolean = false;
   errorMessage: string = '';
   successMessage: string = '';
@@ -28,11 +25,11 @@ export class RegisterComponent {
   constructor(
     private authService: AuthService,
     private router: Router
-  ) {
-    this.departments = this.authService.getDepartments();
-  }
+  ) {}
 
   onSubmit(): void {
+    console.log('📝 Formulário de cadastro submetido');
+
     if (!this.isFormValid()) {
       this.errorMessage = 'Por favor, preencha todos os campos';
       return;
@@ -48,8 +45,8 @@ export class RegisterComponent {
       return;
     }
 
-    // Verifica se o email já existe (com tipagem correta)
-    const existingUser = this.authService.getUsers().find((user: User) => user.email === this.userData.email);
+    // Verifica se o email já existe
+    const existingUser = this.authService.getUsers().find(user => user.email === this.userData.email);
     if (existingUser) {
       this.errorMessage = 'Este email já está cadastrado';
       return;
@@ -62,7 +59,14 @@ export class RegisterComponent {
     // Simula processamento
     setTimeout(() => {
       try {
-        const success = this.authService.addUser(this.userData);
+        // Adiciona valores padrão para department e role
+        const userWithDefaults = {
+          ...this.userData,
+          department: 'Geral',
+          role: 'user' as 'admin' | 'user'
+        };
+        
+        const success = this.authService.addUser(userWithDefaults);
         
         if (success) {
           this.successMessage = 'Usuário cadastrado com sucesso! Redirecionando para login...';
@@ -81,11 +85,18 @@ export class RegisterComponent {
   }
 
   isFormValid(): boolean {
-    return !!this.userData.name && 
+    const isValid = !!this.userData.name && 
            !!this.userData.email && 
-           !!this.userData.department && 
            !!this.userData.password && 
            !!this.confirmPassword;
+
+    console.log('✅ Formulário válido?', isValid);
+    console.log('Nome:', this.userData.name);
+    console.log('Email:', this.userData.email);
+    console.log('Senha:', this.userData.password);
+    console.log('Confirmação:', this.confirmPassword);
+
+    return isValid;
   }
 
   goToLogin(): void {
@@ -94,5 +105,6 @@ export class RegisterComponent {
 
   clearErrors(): void {
     this.errorMessage = '';
+    this.successMessage = '';
   }
 }
