@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AuthService, User } from '../auth/auth.service';
+import { AuthService, User } from '../service/auth/auth.service';
 
 export interface Report {
   id: number;

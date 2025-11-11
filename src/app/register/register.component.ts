@@ -1,54 +1,62 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../auth/auth.service';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { AuthService } from '../service/auth/auth.service';
 
 @Component({
   selector: 'app-register',
+  standalone: true,
+  imports: [CommonModule, FormsModule, HttpClientModule],
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css'],
-  imports: [CommonModule, FormsModule]
+  styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
   userData = {
     name: '',
+    username: '',
     email: '',
-    password: ''
+    senha: '',
+    confirmPassword: '',
+    setor: ''
   };
-  
-  confirmPassword: string = '';
-  isLoading: boolean = false;
-  errorMessage: string = '';
-  successMessage: string = '';
+
+  isLoading = false;
+  errorMessage = '';
+  successMessage = '';
 
   constructor(
     private authService: AuthService,
     private router: Router
   ) {}
 
-  onSubmit(): void {
-    console.log('📝 Formulário de cadastro submetido');
+  clearErrors() {
+    this.errorMessage = '';
+    this.successMessage = '';
+  }
 
+  goToLogin() {
+    this.router.navigate(['/login']);
+  }
+
+  isFormValid(): boolean {
+    return this.userData.name !== '' && 
+           this.userData.username !== '' && 
+           this.userData.email !== '' && 
+           this.userData.senha !== '' && 
+           this.userData.confirmPassword !== '' &&
+           this.userData.senha === this.userData.confirmPassword;
+  }
+
+  onSubmit() {
     if (!this.isFormValid()) {
-      this.errorMessage = 'Por favor, preencha todos os campos';
+      this.errorMessage = 'Por favor, preencha todos os campos corretamente.';
       return;
     }
 
-    if (this.userData.password !== this.confirmPassword) {
-      this.errorMessage = 'As senhas não coincidem';
-      return;
-    }
-
-    if (this.userData.password.length < 6) {
-      this.errorMessage = 'A senha deve ter pelo menos 6 caracteres';
-      return;
-    }
-
-    // Verifica se o email já existe
-    const existingUser = this.authService.getUsers().find(user => user.email === this.userData.email);
-    if (existingUser) {
-      this.errorMessage = 'Este email já está cadastrado';
+    if (this.userData.senha !== this.userData.confirmPassword) {
+      this.errorMessage = 'Senhas não coincidem!';
       return;
     }
 
@@ -56,55 +64,35 @@ export class RegisterComponent {
     this.errorMessage = '';
     this.successMessage = '';
 
-    // Simula processamento
-    setTimeout(() => {
-      try {
-        // Adiciona valores padrão para department e role
-        const userWithDefaults = {
-          ...this.userData,
-          department: 'Geral',
-          role: 'user' as 'admin' | 'user'
-        };
+    // Preparar dados para API (remover confirmPassword)
+    const { confirmPassword, ...registerData } = this.userData;
+
+    console.log('📝 Tentando registrar:', registerData);
+
+    this.authService.register(registerData).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        this.successMessage = response.message || 'Cadastro realizado com sucesso!';
         
-        const success = this.authService.addUser(userWithDefaults);
+        console.log('✅ Usuário cadastrado:', response);
         
-        if (success) {
-          this.successMessage = 'Usuário cadastrado com sucesso! Redirecionando para login...';
-          setTimeout(() => {
-            this.router.navigate(['/login']);
-          }, 2000);
+        // Redirecionar após 2 segundos
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 2000);
+      },
+      error: (error) => {
+        this.isLoading = false;
+        console.error('❌ Erro no cadastro:', error);
+        
+        if (error.error && error.error.message) {
+          this.errorMessage = error.error.message;
+        } else if (error.status === 400) {
+          this.errorMessage = 'Usuário já existe com este email ou username';
         } else {
           this.errorMessage = 'Erro ao cadastrar usuário. Tente novamente.';
         }
-      } catch (error) {
-        this.errorMessage = 'Erro ao processar cadastro. Tente novamente.';
       }
-      
-      this.isLoading = false;
-    }, 1500);
-  }
-
-  isFormValid(): boolean {
-    const isValid = !!this.userData.name && 
-           !!this.userData.email && 
-           !!this.userData.password && 
-           !!this.confirmPassword;
-
-    console.log('✅ Formulário válido?', isValid);
-    console.log('Nome:', this.userData.name);
-    console.log('Email:', this.userData.email);
-    console.log('Senha:', this.userData.password);
-    console.log('Confirmação:', this.confirmPassword);
-
-    return isValid;
-  }
-
-  goToLogin(): void {
-    this.router.navigate(['/login']);
-  }
-
-  clearErrors(): void {
-    this.errorMessage = '';
-    this.successMessage = '';
+    });
   }
 }

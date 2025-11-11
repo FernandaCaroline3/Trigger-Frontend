@@ -90,7 +90,8 @@
           </span>
         </div>
         <div class="activity-date">
-          {{ report.createdAt | date:'dd/MM' }}
+          <!-- ✅ CORREÇÃO: Usando formatDate em vez do pipe -->
+          {{ formatDate(report.createdAt) }}
         </div>
       </div>
       <div *ngIf="reports.length === 0" class="empty-state">
@@ -110,7 +111,8 @@
           </span>
         </div>
         <div class="activity-date">
-          {{ request.createdAt | date:'dd/MM' }}
+          <!-- ✅ CORREÇÃO: Usando formatDate em vez do pipe -->
+          {{ formatDate(request.createdAt) }}
         </div>
       </div>
       <div *ngIf="productRequests.length === 0" class="empty-state">

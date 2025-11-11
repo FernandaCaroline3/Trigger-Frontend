@@ -25,6 +25,20 @@
           (input)="clearErrors()">
       </div>
 
+      <!-- Username Field -->
+      <div class="form-group">
+        <label for="username" class="form-label">Username</label>
+        <input 
+          type="text" 
+          id="username"
+          [(ngModel)]="userData.username" 
+          name="username"
+          required
+          placeholder="Seu username único"
+          class="form-input"
+          (input)="clearErrors()">
+      </div>
+
       <!-- Email Field -->
       <div class="form-group">
         <label for="email" class="form-label">Email</label>
@@ -39,14 +53,27 @@
           (input)="clearErrors()">
       </div>
 
+      <!-- Setor Field -->
+      <div class="form-group">
+        <label for="setor" class="form-label">Setor</label>
+        <input 
+          type="text" 
+          id="setor"
+          [(ngModel)]="userData.setor" 
+          name="setor"
+          placeholder="Seu setor (opcional)"
+          class="form-input"
+          (input)="clearErrors()">
+      </div>
+
       <!-- Password Field -->
       <div class="form-group">
-        <label for="password" class="form-label">Senha</label>
+        <label for="senha" class="form-label">Senha</label>
         <input 
           type="password" 
-          id="password"
-          [(ngModel)]="userData.password" 
-          name="password"
+          id="senha"
+          [(ngModel)]="userData.senha" 
+          name="senha"
           required
           placeholder="Crie uma senha"
           class="form-input"
@@ -59,7 +86,7 @@
         <input 
           type="password" 
           id="confirmPassword"
-          [(ngModel)]="confirmPassword" 
+          [(ngModel)]="userData.confirmPassword" 
           name="confirmPassword"
           required
           placeholder="Digite a senha novamente"

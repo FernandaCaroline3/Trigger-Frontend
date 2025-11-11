@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { AuthService, User } from '../auth/auth.service';
+import { AuthService, User } from '../service/auth/auth.service';
 import { DataService, Report, ProductRequest } from '../data/data.service';
 
 @Component({
@@ -55,6 +55,16 @@ export class HomeComponent implements OnInit {
       'rejected': 'Rejeitado'
     };
     return statusMap[status] || status;
+  }
+
+  // ✅ CORREÇÃO: Método que aceita tanto Date quanto string
+  formatDate(date: Date | string): string {
+    // Se for string, converte para Date
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    
+    const day = dateObj.getDate().toString().padStart(2, '0');
+    const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+    return `${day}/${month}`;
   }
 
   logout() {

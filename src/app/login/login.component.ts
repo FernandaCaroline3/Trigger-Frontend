@@ -1,52 +1,84 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../auth/auth.service';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { AuthService } from '../service/auth/auth.service';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule, FormsModule, HttpClientModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
-  imports: [CommonModule, FormsModule]
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  email: string = '';
-  password: string = '';
-  errorMessage: string = '';
+  username: string = '';
+  senha: string = '';
   isLoading: boolean = false;
+  errorMessage: string = '';
 
   constructor(
     private authService: AuthService,
     private router: Router
   ) {}
 
-  goToRegister(): void {
-    this.router.navigate(['/register']);
-  }
-
-  onSubmit(): void {
-    if (!this.email || !this.password) {
-      this.errorMessage = 'Por favor, preencha todos os campos';
+  onLogin() {
+    if (!this.username || !this.senha) {
+      this.errorMessage = 'Por favor, preencha username e senha';
       return;
     }
 
     this.isLoading = true;
     this.errorMessage = '';
 
-    // Mantenha o setTimeout para simular chamada de API
-    setTimeout(() => {
-      const success = this.authService.login(this.email, this.password);
-      
-      if (success) {
-        console.log('✅ Login bem-sucedido, redirecionando...');
-        this.router.navigate(['/app']); // ← MUDEI PARA '/app'
-      } else {
-        this.errorMessage = 'E-mail ou senha incorretos';
-        console.log('❌ Login falhou');
+    const credentials = {
+      username: this.username,
+      senha: this.senha
+    };
+
+    console.log('🔐 Tentando login com:', credentials);
+
+    this.authService.login(credentials).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        console.log('✅ Login bem-sucedido:', response);
+        
+        // Salvar token e informações do usuário
+        if (response.token) {
+          localStorage.setItem('authToken', response.token);
+          console.log('🔑 Token salvo:', response.token);
+        }
+        if (response.user) {
+          localStorage.setItem('user', JSON.stringify(response.user));
+          console.log('👤 Usuário salvo:', response.user);
+        }
+        
+        // Redirecionar para a página principal
+        this.router.navigate(['/app']);
+      },
+      error: (error) => {
+        this.isLoading = false;
+        console.error('❌ Erro no login:', error);
+        
+        if (error.error && error.error.message) {
+          this.errorMessage = error.error.message;
+        } else if (error.status === 401) {
+          this.errorMessage = 'Username ou senha inválidos';
+        } else if (error.status === 404) {
+          this.errorMessage = 'Usuário não encontrado';
+        } else {
+          this.errorMessage = 'Erro ao fazer login. Tente novamente.';
+        }
       }
-      
-      this.isLoading = false;
-    }, 1000);
+    });
+  }
+
+  goToRegister() {
+    this.router.navigate(['/register']);
+  }
+
+  clearError() {
+    this.errorMessage = '';
   }
 }

@@ -218,3 +218,25 @@
 .btn-secondary:hover {
   background: #5a6268;
 }
+
+/* ✅ CSS ADICIONADO para loading */
+.loading-message {
+  padding: 10px 20px;
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 6px;
+  color: #856404;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.btn-primary:disabled:hover {
+  background: #ccc;
+}

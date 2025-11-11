@@ -1,120 +1,161 @@
 <div class="profile-container">
-  <div class="profile-header">
-    <h1>Meu Perfil</h1>
-    <p>Gerencie suas informações pessoais no Capsa Desk</p>
-  </div>
-
-  <div class="profile-content">
-    <!-- Card do Perfil -->
-    <div class="profile-card">
-      <div class="profile-avatar-section">
-        <div class="avatar-large">{{ user.avatar }}</div>
-        <div class="avatar-info">
-          <h2>{{ user.name }}</h2>
-          <p>{{ user.role }} • {{ user.department }}</p>
-          <p class="join-date">Membro desde {{ user.joinedDate | date:'dd/MM/yyyy' }}</p>
-        </div>
+  <!-- Header do Perfil -->
+  <div class="profile-card">
+    <div class="profile-avatar-section">
+      <div class="avatar-large">
+        {{ user.name.charAt(0) }}
       </div>
-
-      <div class="profile-actions">
-        <button *ngIf="!isEditing" (click)="enableEdit()" class="btn-primary">
-          <span class="material-icons">edit</span>
-          Editar Perfil
+      <div class="avatar-info">
+        <h2>{{ user.name }}</h2>
+        <p>{{ user.role }} - {{ user.department }}</p>
+        <p class="join-date">Membro desde {{ user.joinedDate }}</p>
+      </div>
+    </div>
+    
+    <div class="profile-actions">
+      <!-- Botão Editar (quando não está editando e não está carregando) -->
+      <button *ngIf="!isEditing && !isLoading" class="btn-primary" (click)="enableEdit()">
+        ✏️ Editar Perfil
+      </button>
+      
+      <!-- Mensagem de Loading (quando está salvando) -->
+      <div *ngIf="isLoading" class="loading-message">
+        ⏳ Salvando alterações...
+      </div>
+      
+      <!-- Botões Salvar/Cancelar (quando está editando e não está carregando) -->
+      <div *ngIf="isEditing && !isLoading" class="form-actions">
+        <button class="btn-primary" (click)="saveProfile()" [disabled]="!isFormValid()">
+          💾 Salvar
         </button>
-        <button (click)="changePassword()" class="btn-secondary">
-          <span class="material-icons">lock</span>
-          Alterar Senha
+        <button class="btn-secondary" (click)="cancelEdit()">
+          ❌ Cancelar
         </button>
       </div>
     </div>
+  </div>
 
-    <!-- Formulário de Edição -->
-    <div class="profile-form">
-      <h3>Informações Pessoais</h3>
-      
+  <!-- Formulário/Visualização -->
+  <div class="profile-form">
+    <h3>Informações Pessoais</h3>
+    
+    <form *ngIf="isEditing; else viewMode">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="name">Nome Completo</label>
+          <input 
+            type="text" 
+            id="name" 
+            [(ngModel)]="user.name" 
+            name="name" 
+            class="form-input" 
+            required>
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input 
+            type="email" 
+            id="email" 
+            [(ngModel)]="user.email" 
+            name="email" 
+            class="form-input" 
+            disabled>
+          <small>Email não pode ser alterado</small>
+        </div>
+        
+        <div class="form-group">
+          <label for="phone">Telefone</label>
+          <input 
+            type="tel" 
+            id="phone" 
+            [(ngModel)]="user.phone" 
+            name="phone" 
+            class="form-input">
+        </div>
+        
+        <div class="form-group">
+          <label for="department">Departamento</label>
+          <input 
+            type="text" 
+            id="department" 
+            [(ngModel)]="user.department" 
+            name="department" 
+            class="form-input">
+        </div>
+        
+        <div class="form-group full-width">
+          <label for="bio">Biografia</label>
+          <textarea 
+            id="bio" 
+            [(ngModel)]="user.bio" 
+            name="bio" 
+            class="form-textarea" 
+            rows="4">
+          </textarea>
+        </div>
+      </div>
+    </form>
+
+    <ng-template #viewMode>
       <div class="form-grid">
         <div class="form-group">
           <label>Nome Completo</label>
-          <input 
-            type="text" 
-            [(ngModel)]="user.name" 
-            [disabled]="!isEditing" 
-            class="form-input">
+          <div class="form-input" style="background: #f8f9fa; border: none;">
+            {{ user.name }}
+          </div>
         </div>
-
+        
         <div class="form-group">
           <label>Email</label>
-          <input 
-            type="email" 
-            [(ngModel)]="user.email" 
-            [disabled]="!isEditing" 
-            placeholder="seu.email@capsa.com"
-            class="form-input">
+          <div class="form-input" style="background: #f8f9fa; border: none;">
+            {{ user.email }}
+          </div>
         </div>
-
+        
         <div class="form-group">
           <label>Telefone</label>
-          <input 
-            type="tel" 
-            [(ngModel)]="user.phone" 
-            [disabled]="!isEditing" 
-            class="form-input">
+          <div class="form-input" style="background: #f8f9fa; border: none;">
+            {{ user.phone }}
+          </div>
         </div>
-
+        
         <div class="form-group">
           <label>Departamento</label>
-          <select [(ngModel)]="user.department" [disabled]="!isEditing" class="form-select">
-            <option value="Tecnologia da Informação">Tecnologia da Informação</option>
-            <option value="Recursos Humanos">Recursos Humanos</option>
-            <option value="Financeiro">Financeiro</option>
-            <option value="Marketing">Marketing</option>
-            <option value="Vendas">Vendas</option>
-          </select>
+          <div class="form-input" style="background: #f8f9fa; border: none;">
+            {{ user.department }}
+          </div>
         </div>
-
+        
         <div class="form-group full-width">
           <label>Biografia</label>
-          <textarea 
-            [(ngModel)]="user.bio" 
-            [disabled]="!isEditing" 
-            rows="4" 
-            class="form-textarea"
-            placeholder="Conte um pouco sobre você..."></textarea>
+          <div class="form-textarea" style="background: #f8f9fa; border: none; min-height: 100px;">
+            {{ user.bio }}
+          </div>
         </div>
       </div>
+    </ng-template>
+  </div>
 
-      <div *ngIf="isEditing" class="form-actions">
-        <button (click)="saveProfile()" class="btn-primary">
-          <span class="material-icons">save</span>
-          Salvar Alterações
-        </button>
-        <button (click)="cancelEdit()" class="btn-secondary">
-          <span class="material-icons">cancel</span>
-          Cancelar
-        </button>
+  <!-- Estatísticas -->
+  <div class="profile-stats">
+    <h3>Estatísticas do Usuário</h3>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number">{{ stats.reportsCreated }}</div>
+        <div class="stat-label">Relatórios Criados</div>
       </div>
-    </div>
-
-    <!-- Estatísticas -->
-    <div class="profile-stats">
-      <h3>Estatísticas do Usuário</h3>
-      <div class="stats-grid">
-        <div class="stat-item">
-          <div class="stat-number">24</div>
-          <div class="stat-label">Relatórios Criados</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number">18</div>
-          <div class="stat-label">Solicitações</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number">95%</div>
-          <div class="stat-label">Taxa de Aprovação</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number">15</div>
-          <div class="stat-label">Dias Ativo</div>
-        </div>
+      <div class="stat-item">
+        <div class="stat-number">{{ stats.requestsMade }}</div>
+        <div class="stat-label">Solicitações</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">{{ stats.approvalRate }}%</div>
+        <div class="stat-label">Taxa de Aprovação</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">{{ stats.activeDays }}</div>
+        <div class="stat-label">Dias Ativo</div>
       </div>
     </div>
   </div>

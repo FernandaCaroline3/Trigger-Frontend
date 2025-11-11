@@ -6,43 +6,46 @@
         <img src="assets/logo-capsa-desk.png" alt="Capsa Desk" class="logo-image">
       </div>
       <h1 class="login-title">Capsa Desk</h1>
-      <p class="welcome-text">Acesse sua conta para continuar</p>
+      <p class="welcome-text">Bem-vindo de volta!</p>
     </div>
 
     <!-- Form -->
-    <form (ngSubmit)="onSubmit()" class="login-form">
-      <!-- Email Field -->
+    <form (ngSubmit)="onLogin()" class="login-form">
+      
+      <!-- Username Field -->
       <div class="form-group">
-        <label for="email" class="form-label">Email</label>
+        <label for="username" class="form-label">Username</label>
         <input 
-          type="email" 
-          id="email"
-          [(ngModel)]="email" 
-          name="email"
+          type="text" 
+          id="username"
+          [(ngModel)]="username"
+          name="username"
           required
-          placeholder="seu.email@capsa.com"
-          class="form-input">
+          placeholder="Seu username"
+          class="form-input"
+          (input)="clearError()">
       </div>
 
       <!-- Password Field -->
       <div class="form-group">
-        <label for="password" class="form-label">Senha</label>
+        <label for="senha" class="form-label">Senha</label>
         <input 
           type="password" 
-          id="password"
-          [(ngModel)]="password" 
-          name="password"
+          id="senha"
+          [(ngModel)]="senha"
+          name="senha"
           required
           placeholder="Sua senha"
-          class="form-input">
+          class="form-input"
+          (input)="clearError()">
       </div>
 
       <!-- Login Button -->
       <button 
         type="submit" 
-        [disabled]="isLoading || !email || !password" 
+        [disabled]="isLoading" 
         class="login-button">
-        Entrar
+        {{ isLoading ? 'Entrando...' : 'Entrar' }}
       </button>
 
       <!-- Error Message -->
@@ -53,9 +56,7 @@
 
     <!-- Links Footer -->
     <div class="links-footer">
-      <a href="#" class="footer-link">Esqueceu sua senha?</a>
-      <span class="separator">•</span>
-      <a routerLink="/register" class="footer-link" (click)="goToRegister()">Cadastrar novo usuário</a>
+      <a class="footer-link" (click)="goToRegister()">Não tem uma conta? Cadastre-se</a>
     </div>
   </div>
 </div>
